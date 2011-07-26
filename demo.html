@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TwilioCapability Test</title>
+    <link href="//static0.twilio.com/packages/quickstart/client.css" rel="stylesheet">
+    <script src="//static.twilio.com/libs/twiliojs/1.0/twilio.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="TwilioCapability.js"></script>
+    <script>
+			var accountSid = 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+			var authToken  = 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
+			var appSid     = 'APzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz';
+			var clientName = 'jenny';
+
+  		var capability = new TwilioCapability(accountSid, authToken);
+  		capability.allowClientOutgoing(appSid);
+  		capability.allowClientIncoming(clientName);
+
+			var token = capability.generateToken();
+
+			Twilio.Device.setup(token);
+
+			Twilio.Device.ready(function(device) {
+				$("#log").text("User '" + clientName + "' is ready");
+			});
+
+			Twilio.Device.error(function(error) {
+				$("#log").text("Error: " + error.message);
+			});
+
+			Twilio.Device.connect(function(conn) {
+				$("#log").text("Successfully established call");
+			});
+
+			Twilio.Device.disconnect(function(conn) {
+				$("#log").text("Call ended");
+			});
+
+			Twilio.Device.incoming(function(conn) {
+				$("log").text("Incoming connection from " + conn.parameters.From);
+				conn.status; // => "pending"
+				conn.accept();
+				conn.status; // => "connecting"
+			});
+
+			$(function() {
+				$('.call').click(function() {
+					var params =  {
+						PhoneNumber: $("#number").val()
+					};
+					$("#log").text("Calling " + params.PhoneNumber);
+					Twilio.Device.connect(params);
+				});
+
+				$('.hangup').click(function() {
+					Twilio.Device.disconnectAll();
+				});
+			});
+    </script>
+  </head>
+  <body>
+    <button class="call">Call</button>
+    <button class="hangup">Hangup</button>
+    <input type="text" id="number" placeholder="Enter a phone number or person to call">
+    <div id="log">Loading...</div>
+  </body>
+</html>
