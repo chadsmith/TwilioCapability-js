@@ -1,7 +1,5 @@
 # TwilioCapability for JavaScript
 
-Node.js implementation coming soon.
-
 ## Client side implementation
 
 Do not use in a production environment!
@@ -23,4 +21,21 @@ Do not use in a production environment!
 	</script>
 
 
-See [demo.html](https://raw.github.com/chadsmith/TwilioCapability-js/master/demo.html) for a full example.
+See [client-side/demo.html](https://github.com/chadsmith/TwilioCapability-js/blob/master/client-side/demo.html) for a full example.
+
+## Node.js implementation
+
+	var TwilioCapability = require('./lib/TwilioCapability');
+
+	var accountSid = 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+	var authToken  = 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy';
+	var appSid     = 'APzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz';
+	var clientName = 'jenny';
+
+	var capability = new TwilioCapability(accountSid, authToken);
+	capability.allowClientOutgoing(appSid);
+	capability.allowClientIncoming(clientName);
+
+	var token = capability.generateToken();
+
+See [nodejs/server.js](https://github.com/chadsmith/TwilioCapability-js/blob/master/nodejs/server.js) for a full example.
